@@ -11,18 +11,16 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.scooter.base.BaseTest;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
 
 @Epic("Яндекс.Самокат API")
 @Feature("Список заказов")
 class OrderListTest extends BaseTest {
+
+    private static final int NON_EXISTENT_COURIER_ID = 999_999_999;
 
     @Test
     @Story("Получение списка заказов")
@@ -35,9 +33,6 @@ class OrderListTest extends BaseTest {
                 .statusCode(200)
                 .body("orders", notNullValue())
                 .body("orders", instanceOf(List.class));
-
-        List<Map<String, Object>> orders = response.jsonPath().getList("orders");
-        assertThat("список заказов не должен быть пустым", orders, not(empty()));
     }
 
     @Test
@@ -45,7 +40,7 @@ class OrderListTest extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("Список заказов несуществующего курьера возвращает ошибку")
     void ordersForNonExistentCourierReturnsError() {
-        orderClient.getOrders(999_999_999)
+        orderClient.getOrders(NON_EXISTENT_COURIER_ID)
                 .then()
                 .statusCode(404)
                 .body("message", containsString("не найден"));

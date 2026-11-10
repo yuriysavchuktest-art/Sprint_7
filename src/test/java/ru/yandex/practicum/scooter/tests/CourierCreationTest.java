@@ -100,4 +100,32 @@ class CourierCreationTest extends BaseTest {
                 .statusCode(400)
                 .body("message", containsString("Недостаточно данных"));
     }
+
+    @Test
+    @Story("Обязательные поля")
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("Нельзя создать курьера без обязательных полей")
+    void cannotCreateCourierWithoutRequiredFields() {
+        Courier emptyCourier = new Courier(null, null, null);
+
+        courierClient.create(emptyCourier)
+                .then()
+                .statusCode(400)
+                .body("message", containsString("Недостаточно данных"));
+    }
+
+    @Test
+    @Story("Опциональные поля")
+    @Severity(SeverityLevel.NORMAL)
+    @DisplayName("firstName не является обязательным полем")
+    void canCreateCourierWithoutFirstName() {
+        Courier courierWithoutFirstName = new Courier(
+                DataGenerator.uniqueLogin(), "password123", null);
+        registerCourier(courierWithoutFirstName);
+
+        courierClient.create(courierWithoutFirstName)
+                .then()
+                .statusCode(201)
+                .body("ok", equalTo(true));
+    }
 }
