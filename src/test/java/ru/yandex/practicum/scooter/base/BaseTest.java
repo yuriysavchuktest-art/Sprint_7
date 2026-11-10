@@ -3,6 +3,7 @@ package ru.yandex.practicum.scooter.base;
 import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
+import io.restassured.config.LogConfig;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.AfterEach;
@@ -34,9 +35,9 @@ public abstract class BaseTest {
     @BeforeAll
     static void configureRestAssured() {
         RestAssured.baseURI = ApiConfig.BASE_URL;
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-        RestAssured.config = RestAssuredConfig.config().httpClient(
-                HttpClientConfig.httpClientConfig()
+        RestAssured.config = RestAssuredConfig.config()
+                .logConfig(LogConfig.logConfig().enablePrettyPrinting(true))
+                .httpClient(HttpClientConfig.httpClientConfig()
                         .setParam("http.connection.timeout", 20_000)
                         .setParam("http.socket.timeout", 20_000));
     }
