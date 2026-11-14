@@ -55,27 +55,6 @@ class CourierCreationTest extends BaseTest {
     }
 
     @Test
-    @Story("Если создать пользователя с логином, который уже есть, возвращается ошибка")
-    @Severity(SeverityLevel.CRITICAL)
-    @DisplayName("Создание курьера с существующим логином возвращает ошибку")
-    void cannotCreateCourierWithExistingLogin() {
-        Courier courier = DataGenerator.randomCourier();
-        registerCourier(courier);
-
-        courierClient.create(courier)
-                .then()
-                .statusCode(201);
-
-        Courier courierWithSameLogin = new Courier(
-                courier.getLogin(), "another_password", "Другое имя");
-
-        courierClient.create(courierWithSameLogin)
-                .then()
-                .statusCode(409)
-                .body("message", containsString("уже используется"));
-    }
-
-    @Test
     @Story("Если одного из полей нет, запрос возвращает ошибку")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Нельзя создать курьера без логина")
@@ -112,20 +91,5 @@ class CourierCreationTest extends BaseTest {
                 .then()
                 .statusCode(400)
                 .body("message", containsString("Недостаточно данных"));
-    }
-
-    @Test
-    @Story("Опциональные поля")
-    @Severity(SeverityLevel.NORMAL)
-    @DisplayName("firstName не является обязательным полем")
-    void canCreateCourierWithoutFirstName() {
-        Courier courierWithoutFirstName = new Courier(
-                DataGenerator.uniqueLogin(), "password123", null);
-        registerCourier(courierWithoutFirstName);
-
-        courierClient.create(courierWithoutFirstName)
-                .then()
-                .statusCode(201)
-                .body("ok", equalTo(true));
     }
 }

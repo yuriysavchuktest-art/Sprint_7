@@ -109,7 +109,6 @@ class CourierLoginTest extends BaseTest {
     }
 
     @Test
-    @Disabled("Дефект стенда: запрос логина без password зависает вместо ответа 400")
     @Story("Если какого-то поля нет, запрос возвращает ошибку")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Авторизация без пароля возвращает ошибку")

@@ -72,7 +72,7 @@ class OrderAcceptTest extends BaseTest {
         orderClient.accept(orderId)
                 .then()
                 .statusCode(400)
-                .body("message", containsString("Недостаточно данных для поиска"));;
+                .body("message", containsString("Недостаточно данных для поиска"));
     }
 
     @Test

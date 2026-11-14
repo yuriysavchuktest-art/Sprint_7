@@ -57,7 +57,7 @@ class OrderFinishTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Запрос accept без courierId возвращает ошибку")
     void acceptWithoutCourierIdReturnsError() {
-        orderClient.accept(1)
+        orderClient.accept(NON_EXISTENT_ID)
                 .then()
                 .statusCode(400)
                 .body("message", containsString("Недостаточно данных для поиска"));

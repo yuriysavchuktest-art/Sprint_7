@@ -17,7 +17,6 @@ import static org.hamcrest.Matchers.notNullValue;
 class CourierOrdersCountTest extends BaseTest {
 
     @Test
-    @Disabled("Дефект стенда: эндпоинт GET /api/v1/courier/{id}/ordersCount не реализован, возвращает 404")
     @Story("Успешное получение количества заказов")
     @Severity(SeverityLevel.BLOCKER)
     @DisplayName("Couriers - Получить количество заказов курьера")
