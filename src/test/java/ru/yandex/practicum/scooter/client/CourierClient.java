@@ -31,7 +31,7 @@ public class CourierClient {
                 .build();
     }
 
-    @Step("Создание курьера с логином {courier.login}")
+    @Step("Courier - Создание курьера с логином {courier.login}")
     public Response create(Courier courier) {
         return given()
                 .spec(requestSpec())
@@ -40,7 +40,7 @@ public class CourierClient {
                 .post(ApiConfig.COURIER_PATH);
     }
 
-    @Step("Авторизация курьера с логином {credentials.login}")
+    @Step("Courier - Авторизация курьера в системе с логином {credentials.login}")
     public Response login(CourierCredentials credentials) {
         return given()
                 .spec(requestSpec())
@@ -49,12 +49,28 @@ public class CourierClient {
                 .post(ApiConfig.COURIER_LOGIN_PATH);
     }
 
-    @Step("Удаление курьера с id {courierId}")
+    @Step("Courier - Удаление курьера с id {courierId}")
     public Response delete(int courierId) {
         return given()
                 .spec(requestSpec())
                 .when()
                 .delete(ApiConfig.COURIER_PATH + "/" + courierId);
+    }
+
+    @Step("Courier - Удаление курьера без id")
+    public Response deleteWithoutId() {
+        return given()
+                .spec(requestSpec())
+                .when()
+                .delete(ApiConfig.COURIER_PATH);
+    }
+
+    @Step("Couriers - Получить количество заказов курьера с id {courierId}")
+    public Response getOrdersCount(int courierId) {
+        return given()
+                .spec(requestSpec())
+                .when()
+                .get(ApiConfig.COURIER_PATH + "/" + courierId + "/ordersCount");
     }
 
     /**

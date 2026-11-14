@@ -71,7 +71,8 @@ class OrderAcceptTest extends BaseTest {
 
         orderClient.accept(orderId)
                 .then()
-                .statusCode(400);
+                .statusCode(400)
+                .body("message", containsString("Недостаточно данных для поиска"));;
     }
 
     @Test
@@ -89,7 +90,7 @@ class OrderAcceptTest extends BaseTest {
         Response orderResponse = orderClient.getOrder(track);
         int orderId = orderResponse.jsonPath().getInt("order.id");
 
-        orderClient.accept(orderId, 999999999)
+        orderClient.accept(orderId, NON_EXISTENT_ID)
                 .then()
                 .statusCode(404)
                 .body("message", containsString("Курьера с таким id не существует"));
@@ -124,7 +125,7 @@ class OrderAcceptTest extends BaseTest {
         int courierId = courierClient.getCourierId(
                 new CourierCredentials(courier.getLogin(), courier.getPassword()));
 
-        orderClient.accept(999999999, courierId)
+        orderClient.accept(NON_EXISTENT_ID, courierId)
                 .then()
                 .statusCode(404)
                 .body("message", containsString("Заказа с таким id не существует"));
@@ -157,6 +158,6 @@ class OrderAcceptTest extends BaseTest {
         orderClient.accept(orderId, courierId)
                 .then()
                 .statusCode(409)
-                .body("message", containsString("Этот заказ уже принят"));
+                .body("message", containsString("Этот заказ уже в работе"));
     }
 }

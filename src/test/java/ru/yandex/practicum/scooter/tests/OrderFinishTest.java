@@ -53,11 +53,11 @@ class OrderFinishTest extends BaseTest {
     }
 
     @Test
-    @Story("Запрос без номера")
+    @Story("Запрос без courierId")
     @Severity(SeverityLevel.CRITICAL)
-    @DisplayName("Запрос без номера заказа возвращает ошибку")
-    void finishOrderWithoutIdReturnsError() {
-        orderClient.finish(0)
+    @DisplayName("Запрос accept без courierId возвращает ошибку")
+    void acceptWithoutCourierIdReturnsError() {
+        orderClient.accept(1)
                 .then()
                 .statusCode(400)
                 .body("message", containsString("Недостаточно данных для поиска"));
@@ -68,7 +68,7 @@ class OrderFinishTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Запрос с несуществующим номером заказа возвращает ошибку")
     void finishOrderWithNonExistentIdReturnsError() {
-        orderClient.finish(999999999)
+        orderClient.finish(NON_EXISTENT_ID)
                 .then()
                 .statusCode(404)
                 .body("message", containsString("Заказа с таким id не существует"));

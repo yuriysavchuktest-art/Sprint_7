@@ -30,7 +30,7 @@ public class OrderClient {
                 .build();
     }
 
-    @Step("Создание заказа")
+    @Step("Orders - Создание заказа")
     public Response create(Order order) {
         return given()
                 .spec(requestSpec())
@@ -39,7 +39,7 @@ public class OrderClient {
                 .post(ApiConfig.ORDERS_PATH);
     }
 
-    @Step("Получение списка заказов")
+    @Step("Orders - Получение списка заказов")
     public Response getOrders() {
         return given()
                 .spec(requestSpec())
@@ -47,7 +47,7 @@ public class OrderClient {
                 .get(ApiConfig.ORDERS_PATH);
     }
 
-    @Step("Получение списка заказов курьера с id {courierId}")
+    @Step("Orders - Получение списка заказов курьера с id {courierId}")
     public Response getOrders(int courierId) {
         return given()
                 .spec(requestSpec())
@@ -56,10 +56,69 @@ public class OrderClient {
                 .get(ApiConfig.ORDERS_PATH);
     }
 
+    @Step("Orders - Получить заказ по его номеру {track}")
+    public Response getOrder(int track) {
+        return given()
+                .spec(requestSpec())
+                .queryParam("t", track)
+                .when()
+                .get(ApiConfig.ORDERS_PATH + "/track");
+    }
+
+    @Step("Orders - Получить заказ без указания номера")
+    public Response getOrder() {
+        return given()
+                .spec(requestSpec())
+                .when()
+                .get(ApiConfig.ORDERS_PATH + "/track");
+    }
+
+    @Step("Orders - Принять заказ с id {orderId} курьером с id {courierId}")
+    public Response accept(int orderId, int courierId) {
+        return given()
+                .spec(requestSpec())
+                .queryParam("courierId", courierId)
+                .when()
+                .put(ApiConfig.ORDERS_PATH + "/accept/" + orderId);
+    }
+
+    @Step("Orders - Принять заказ с id {orderId} без указания курьера")
+    public Response accept(int orderId) {
+        return given()
+                .spec(requestSpec())
+                .when()
+                .put(ApiConfig.ORDERS_PATH + "/accept/" + orderId);
+    }
+
+    @Step("Orders - Принять заказ без указания номера заказа курьером с id {courierId}")
+    public Response acceptWithoutOrderId(int courierId) {
+        return given()
+                .spec(requestSpec())
+                .queryParam("courierId", courierId)
+                .when()
+                .put(ApiConfig.ORDERS_PATH + "/accept");
+    }
+
+    @Step("Orders - Завершить заказ с id {orderId}")
+    public Response finish(int orderId) {
+        return given()
+                .spec(requestSpec())
+                .when()
+                .put(ApiConfig.ORDERS_PATH + "/finish/" + orderId);
+    }
+
+    @Step("Orders - Завершить заказ без id {orderId}")
+    public Response finishWithoutId() {
+        return given()
+                .spec(requestSpec())
+                .when()
+                .put(ApiConfig.ORDERS_PATH + "/finish");
+    }
+
     /**
      * Сервис принимает track заказа как query-параметр.
      */
-    @Step("Отмена заказа с track {track}")
+    @Step("Orders - Отменить заказ с track {track}")
     public Response cancel(int track) {
         return given()
                 .spec(requestSpec())

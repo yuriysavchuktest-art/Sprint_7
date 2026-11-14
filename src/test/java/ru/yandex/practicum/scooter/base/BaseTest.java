@@ -26,6 +26,8 @@ public abstract class BaseTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(BaseTest.class);
 
+    protected static final int NON_EXISTENT_ID = 999_999_999;
+
     protected final CourierClient courierClient = new CourierClient();
     protected final OrderClient orderClient = new OrderClient();
 

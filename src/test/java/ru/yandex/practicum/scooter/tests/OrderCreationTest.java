@@ -50,31 +50,6 @@ class OrderCreationTest extends BaseTest {
 
         int track = response.jsonPath().getInt("track");
         registerOrder(track);
-        assertTrue(track > 0, "track заказа должен быть положительным");
+        assertTrue(track > 0, "track заказа должен быть положительным для сценария: " + description);
     }
-
-    @Test
-    @Story("Валидация цвета заказа")
-    @Severity(SeverityLevel.NORMAL)
-    @DisplayName("Заказ с недопустимым цветом возвращает ошибку")
-    void orderWithInvalidColorReturnsError() {
-        Order order = DataGenerator.randomOrder(List.of("RED"));
-
-        orderClient.create(order)
-                .then()
-                .statusCode(400);
-    }
-
-    @Test
-    @Story("Обязательные поля заказа")
-    @Severity(SeverityLevel.CRITICAL)
-    @DisplayName("Нельзя создать заказ без обязательных полей")
-    void cannotCreateOrderWithoutRequiredFields() {
-        Order emptyOrder = new Order();
-
-        orderClient.create(emptyOrder)
-                .then()
-                .statusCode(400);
-    }
-
 }

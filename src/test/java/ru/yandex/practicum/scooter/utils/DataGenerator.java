@@ -27,6 +27,12 @@ public final class DataGenerator {
         return new Courier("scooter_autotest_" + suffix, "pass_" + suffix, "Тест" + suffix);
     }
 
+    public static Order randomOrder() {
+        List<String> colors = List.of("BLACK", "GREY");
+        List<String> randomColor = List.of(colors.get(ThreadLocalRandom.current().nextInt(colors.size())));
+        return randomOrder(randomColor);
+    }
+
     public static Order randomOrder(List<String> color) {
         long suffix = COUNTER.incrementAndGet();
         return new Order(

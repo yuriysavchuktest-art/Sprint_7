@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class CourierDeleteTest extends BaseTest {
 
     @Test
-    @Story("Успешное удаление курьера")
+    @Story("Успешный запрос возвращает ok: true")
     @Severity(SeverityLevel.BLOCKER)
     @DisplayName("Удаление существующего курьера возвращает ok: true")
     void deleteExistingCourierReturnsOk() {
@@ -45,31 +45,31 @@ class CourierDeleteTest extends BaseTest {
     }
 
     @Test
-    @Story("Удаление несуществующего курьера")
+    @Story("Если отправить запрос с несуществующим id, вернётся ошибка")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Удаление курьера с несуществующим id возвращает ошибку")
     void deleteNonExistentCourierReturnsError() {
-        Response response = courierClient.delete(999999999);
+        Response response = courierClient.delete(NON_EXISTENT_ID);
 
         response.then()
                 .statusCode(404)
-                .body("message", containsString("Курьер не найден"));
+                .body("message", containsString("Курьера с таким id нет."));
     }
 
     @Test
-    @Story("Удаление курьера без id")
+    @Story("Если отправить запрос без id, вернётся ошибка")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Удаление курьера без id возвращает ошибку")
     void deleteCourierWithoutIdReturnsError() {
-        Response response = courierClient.delete(0);
+        Response response = courierClient.deleteWithoutId();
 
         response.then()
                 .statusCode(400)
-                .body("message", containsString("Недостаточно данных"));
+                .body("message", containsString("Недостаточно данных для удаления курьера"));
     }
 
     @Test
-    @Story("Повторное удаление курьера")
+    @Story("Неуспешный запрос возвращает соответствующую ошибку")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Повторное удаление уже удаленного курьера возвращает ошибку")
     void deleteAlreadyDeletedCourierReturnsError() {
@@ -93,6 +93,6 @@ class CourierDeleteTest extends BaseTest {
 
         secondDeleteAttempt.then()
                 .statusCode(404)
-                .body("message", containsString("Курьер не найден"));
+                .body("message", containsString("Курьера с таким id нет."));
     }
 }

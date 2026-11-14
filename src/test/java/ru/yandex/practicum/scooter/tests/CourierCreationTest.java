@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.equalTo;
 class CourierCreationTest extends BaseTest {
 
     @Test
-    @Story("Успешное создание курьера")
+    @Story("Курьера можно создать")
     @Severity(SeverityLevel.BLOCKER)
     @DisplayName("Курьера можно создать")
     void courierCanBeCreated() {
@@ -35,7 +35,7 @@ class CourierCreationTest extends BaseTest {
     }
 
     @Test
-    @Story("Создание дубликата")
+    @Story("Нельзя создать двух одинаковых курьеров")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Нельзя создать двух одинаковых курьеров")
     void cannotCreateTwoIdenticalCouriers() {
@@ -55,7 +55,7 @@ class CourierCreationTest extends BaseTest {
     }
 
     @Test
-    @Story("Создание курьера с занятым логином")
+    @Story("Если создать пользователя с логином, который уже есть, возвращается ошибка")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Создание курьера с существующим логином возвращает ошибку")
     void cannotCreateCourierWithExistingLogin() {
@@ -76,7 +76,7 @@ class CourierCreationTest extends BaseTest {
     }
 
     @Test
-    @Story("Обязательные поля")
+    @Story("Если одного из полей нет, запрос возвращает ошибку")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Нельзя создать курьера без логина")
     void cannotCreateCourierWithoutLogin() {
@@ -89,7 +89,7 @@ class CourierCreationTest extends BaseTest {
     }
 
     @Test
-    @Story("Обязательные поля")
+    @Story("Если одного из полей нет, запрос возвращает ошибку")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Нельзя создать курьера без пароля")
     void cannotCreateCourierWithoutPassword() {
@@ -102,7 +102,7 @@ class CourierCreationTest extends BaseTest {
     }
 
     @Test
-    @Story("Обязательные поля")
+    @Story("Чтобы создать курьера, нужно передать в ручку все обязательные поля")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Нельзя создать курьера без обязательных полей")
     void cannotCreateCourierWithoutRequiredFields() {

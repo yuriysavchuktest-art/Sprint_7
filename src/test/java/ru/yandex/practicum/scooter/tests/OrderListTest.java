@@ -20,8 +20,6 @@ import static org.hamcrest.Matchers.notNullValue;
 @Feature("Список заказов")
 class OrderListTest extends BaseTest {
 
-    private static final int NON_EXISTENT_COURIER_ID = 999_999_999;
-
     @Test
     @Story("Получение списка заказов")
     @Severity(SeverityLevel.BLOCKER)
@@ -40,7 +38,7 @@ class OrderListTest extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @DisplayName("Список заказов несуществующего курьера возвращает ошибку")
     void ordersForNonExistentCourierReturnsError() {
-        orderClient.getOrders(NON_EXISTENT_COURIER_ID)
+        orderClient.getOrders(NON_EXISTENT_ID)
                 .then()
                 .statusCode(404)
                 .body("message", containsString("не найден"));

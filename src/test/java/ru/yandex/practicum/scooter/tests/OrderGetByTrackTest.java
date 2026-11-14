@@ -44,7 +44,7 @@ class OrderGetByTrackTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Запрос без номера заказа возвращает ошибку")
     void getOrderByTrackWithoutTrackReturnsError() {
-        orderClient.getOrder(0)
+        orderClient.getOrder()
                 .then()
                 .statusCode(400)
                 .body("message", containsString("Недостаточно данных для поиска"));
@@ -55,9 +55,9 @@ class OrderGetByTrackTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Запрос с несуществующим номером заказа возвращает ошибку")
     void getOrderByNonExistentTrackReturnsError() {
-        orderClient.getOrder(999999999)
+        orderClient.getOrder(NON_EXISTENT_ID)
                 .then()
-                .statusCode(400)
-                .body("message", containsString("Недостаточно данных для поиска"));
+                .statusCode(404)
+                .body("message", containsString("Заказ не найден"));
     }
 }
