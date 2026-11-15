@@ -2,7 +2,6 @@ package ru.yandex.practicum.scooter.tests;
 
 import io.qameta.allure.*;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.scooter.base.BaseTest;
@@ -17,6 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Epic("Яндекс.Самокат API")
 @Feature("Логин курьера")
 class CourierLoginTest extends BaseTest {
+
+    private static final String COURIER_ID_POSITIVE_MESSAGE = "id курьера должен быть положительным";
+    private static final String ACCOUNT_NOT_FOUND_MESSAGE = "Учетная запись не найдена";
+    private static final String INSUFFICIENT_LOGIN_DATA_MESSAGE = "Недостаточно данных для входа";
 
     @Test
     @Story("Курьер может авторизоваться")
@@ -33,7 +36,7 @@ class CourierLoginTest extends BaseTest {
                 .body("id", notNullValue());
 
         int courierId = response.jsonPath().getInt("id");
-        assertTrue(courierId > 0, "id курьера должен быть положительным");
+        assertTrue(courierId > 0, COURIER_ID_POSITIVE_MESSAGE);
     }
 
     @Test
@@ -43,10 +46,10 @@ class CourierLoginTest extends BaseTest {
     void loginWithWrongPasswordReturnsError() {
         Courier courier = createCourier();
 
-        courierClient.login(new CourierCredentials(courier.getLogin(), "wrong_password"))
+        courierClient.login(new CourierCredentials(courier.getLogin(), DataGenerator.uniquePassword()))
                 .then()
                 .statusCode(404)
-                .body("message", containsString("Учетная запись не найдена"));
+                .body("message", containsString(ACCOUNT_NOT_FOUND_MESSAGE));
     }
 
     @Test
@@ -56,10 +59,10 @@ class CourierLoginTest extends BaseTest {
     void loginWithWrongLoginReturnsError() {
         Courier courier = createCourier();
 
-        courierClient.login(new CourierCredentials("wrong_login", courier.getPassword()))
+        courierClient.login(new CourierCredentials(DataGenerator.uniqueLogin(), courier.getPassword()))
                 .then()
                 .statusCode(404)
-                .body("message", containsString("Учетная запись не найдена"));
+                .body("message", containsString(ACCOUNT_NOT_FOUND_MESSAGE));
     }
 
     @Test
@@ -67,10 +70,27 @@ class CourierLoginTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Авторизация под несуществующим пользователем возвращает ошибку")
     void loginWithNonExistentLoginReturnsError() {
-        courierClient.login(new CourierCredentials(DataGenerator.uniqueLogin(), "some_password"))
+        courierClient.login(new CourierCredentials(DataGenerator.uniqueLogin(), DataGenerator.uniquePassword()))
                 .then()
                 .statusCode(404)
-                .body("message", containsString("Учетная запись не найдена"));
+                .body("message", containsString(ACCOUNT_NOT_FOUND_MESSAGE));
+    }
+
+    @Test
+    @Story("Если авторизоваться под несуществующим пользователем, запрос возвращает ошибку")
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("Удаленный курьер не может авторизоваться")
+    void deletedCourierCannotLogin() {
+        Courier courier = createCourier();
+
+        int courierId = courierClient.getCourierId(
+                new CourierCredentials(courier.getLogin(), courier.getPassword()));
+        courierClient.delete(courierId);
+
+        courierClient.login(new CourierCredentials(courier.getLogin(), courier.getPassword()))
+                .then()
+                .statusCode(404)
+                .body("message", containsString(ACCOUNT_NOT_FOUND_MESSAGE));
     }
 
     @Test
@@ -78,10 +98,11 @@ class CourierLoginTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Авторизация без логина возвращает ошибку")
     void loginWithoutLoginReturnsError() {
-        courierClient.login(new CourierCredentials(null, "some_password"))
+        Courier courier = createCourier();
+        courierClient.login(new CourierCredentials(null, courier.getPassword()))
                 .then()
                 .statusCode(400)
-                .body("message", containsString("Недостаточно данных"));
+                .body("message", containsString(INSUFFICIENT_LOGIN_DATA_MESSAGE));
     }
 
     @Test
@@ -89,10 +110,11 @@ class CourierLoginTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Авторизация с пустым логина возвращает ошибку")
     void loginEmptyLoginReturnsError() {
-        courierClient.login(new CourierCredentials("", "some_password"))
+        Courier courier = createCourier();
+        courierClient.login(new CourierCredentials("", courier.getPassword()))
                 .then()
                 .statusCode(400)
-                .body("message", containsString("Недостаточно данных"));
+                .body("message", containsString(INSUFFICIENT_LOGIN_DATA_MESSAGE));
     }
 
     @Test
@@ -105,7 +127,7 @@ class CourierLoginTest extends BaseTest {
         courierClient.login(new CourierCredentials(courier.getLogin(), ""))
                 .then()
                 .statusCode(400)
-                .body("message", containsString("Недостаточно данных"));
+                .body("message", containsString(INSUFFICIENT_LOGIN_DATA_MESSAGE));
     }
 
     @Test
@@ -118,7 +140,7 @@ class CourierLoginTest extends BaseTest {
         courierClient.login(new CourierCredentials(courier.getLogin(), null))
                 .then()
                 .statusCode(400)
-                .body("message", containsString("Недостаточно данных"));
+                .body("message", containsString(INSUFFICIENT_LOGIN_DATA_MESSAGE));
     }
 
     /**

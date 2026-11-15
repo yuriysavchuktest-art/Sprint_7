@@ -19,6 +19,9 @@ import static org.hamcrest.Matchers.notNullValue;
 @Feature("Получение заказа по номеру")
 class OrderGetByTrackTest extends BaseTest {
 
+    private static final String INSUFFICIENT_DATA_FOR_SEARCH_MESSAGE = "Недостаточно данных для поиска";
+    private static final String ORDER_NOT_FOUND_MESSAGE = "Заказ не найден";
+
     @Test
     @Story("Успешное получение заказа по номеру")
     @Severity(SeverityLevel.BLOCKER)
@@ -47,7 +50,7 @@ class OrderGetByTrackTest extends BaseTest {
         orderClient.getOrder()
                 .then()
                 .statusCode(400)
-                .body("message", containsString("Недостаточно данных для поиска"));
+                .body("message", containsString(INSUFFICIENT_DATA_FOR_SEARCH_MESSAGE));
     }
 
     @Test
@@ -58,6 +61,6 @@ class OrderGetByTrackTest extends BaseTest {
         orderClient.getOrder(NON_EXISTENT_ID)
                 .then()
                 .statusCode(404)
-                .body("message", containsString("Заказ не найден"));
+                .body("message", containsString(ORDER_NOT_FOUND_MESSAGE));
     }
 }

@@ -22,6 +22,10 @@ public final class DataGenerator {
         return "scooter_autotest_" + COUNTER.incrementAndGet();
     }
 
+    public static String uniquePassword() {
+        return "pass_" + COUNTER.incrementAndGet();
+    }
+
     public static Courier randomCourier() {
         String suffix = String.valueOf(COUNTER.incrementAndGet());
         return new Courier("scooter_autotest_" + suffix, "pass_" + suffix, "Тест" + suffix);
@@ -36,9 +40,9 @@ public final class DataGenerator {
     public static Order randomOrder(List<String> color) {
         long suffix = COUNTER.incrementAndGet();
         return new Order(
-                "Иван",
-                "Тестов" + suffix,
-                "Москва, ул. Тестовая, д. " + ThreadLocalRandom.current().nextInt(1, 100),
+                "Арнольд",
+                "Шварценеггер" + suffix,
+                "Лос-Анджелес, Брентвуд, Бульвар Сан-Висенте, " + ThreadLocalRandom.current().nextInt(1, 100),
                 "4",
                 "+7999" + String.format("%07d", ThreadLocalRandom.current().nextInt(10_000_000)),
                 1 + ThreadLocalRandom.current().nextInt(7),

@@ -1,10 +1,6 @@
 package ru.yandex.practicum.scooter.tests;
 
-import io.qameta.allure.Epic;
-import io.qameta.allure.Feature;
-import io.qameta.allure.Severity;
-import io.qameta.allure.SeverityLevel;
-import io.qameta.allure.Story;
+import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +14,9 @@ import static org.hamcrest.Matchers.equalTo;
 @Epic("Яндекс.Самокат API")
 @Feature("Создание курьера")
 class CourierCreationTest extends BaseTest {
+
+    private static final String DUPLICATE_LOGIN_ERROR_MESSAGE = "Этот логин уже используется. Попробуйте другой.";
+    private static final String INSUFFICIENT_DATA_ERROR_MESSAGE = "Недостаточно данных для создания учетной записи";
 
     @Test
     @Story("Курьера можно создать")
@@ -51,7 +50,7 @@ class CourierCreationTest extends BaseTest {
 
         secondAttempt.then()
                 .statusCode(409)
-                .body("message", containsString("уже используется"));
+                .body("message", containsString(DUPLICATE_LOGIN_ERROR_MESSAGE));
     }
 
     @Test
@@ -59,12 +58,13 @@ class CourierCreationTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Нельзя создать курьера без логина")
     void cannotCreateCourierWithoutLogin() {
-        Courier courierWithoutLogin = new Courier(null, "some_password", "Тест");
+        Courier courier = DataGenerator.randomCourier();
+        Courier courierWithoutLogin = new Courier(null, courier.getPassword(), courier.getFirstName());
 
         courierClient.create(courierWithoutLogin)
                 .then()
                 .statusCode(400)
-                .body("message", containsString("Недостаточно данных"));
+                .body("message", containsString(INSUFFICIENT_DATA_ERROR_MESSAGE));
     }
 
     @Test
@@ -72,12 +72,13 @@ class CourierCreationTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Нельзя создать курьера без пароля")
     void cannotCreateCourierWithoutPassword() {
-        Courier courierWithoutPassword = new Courier(DataGenerator.uniqueLogin(), null, "Тест");
+        Courier courier = DataGenerator.randomCourier();
+        Courier courierWithoutPassword = new Courier(courier.getLogin(), null, courier.getFirstName());
 
         courierClient.create(courierWithoutPassword)
                 .then()
                 .statusCode(400)
-                .body("message", containsString("Недостаточно данных"));
+                .body("message", containsString(INSUFFICIENT_DATA_ERROR_MESSAGE));
     }
 
     @Test
@@ -85,11 +86,12 @@ class CourierCreationTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Нельзя создать курьера без обязательных полей")
     void cannotCreateCourierWithoutRequiredFields() {
-        Courier emptyCourier = new Courier(null, null, null);
+        Courier courier = DataGenerator.randomCourier();
+        Courier emptyCourier = new Courier(null, null, courier.getFirstName());
 
         courierClient.create(emptyCourier)
                 .then()
                 .statusCode(400)
-                .body("message", containsString("Недостаточно данных"));
+                .body("message", containsString(INSUFFICIENT_DATA_ERROR_MESSAGE));
     }
 }

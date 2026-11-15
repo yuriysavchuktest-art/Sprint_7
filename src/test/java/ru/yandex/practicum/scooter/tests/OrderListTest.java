@@ -41,6 +41,6 @@ class OrderListTest extends BaseTest {
         orderClient.getOrders(NON_EXISTENT_ID)
                 .then()
                 .statusCode(404)
-                .body("message", containsString("не найден"));
+                .body("message", containsString("Курьер с идентификатором " + NON_EXISTENT_ID + " не найден"));
     }
 }

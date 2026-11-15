@@ -2,7 +2,6 @@ package ru.yandex.practicum.scooter.tests;
 
 import io.qameta.allure.*;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.scooter.base.BaseTest;
@@ -15,6 +14,10 @@ import static org.hamcrest.Matchers.notNullValue;
 @Epic("Яндекс.Самокат API")
 @Feature("Получение количества заказов курьера")
 class CourierOrdersCountTest extends BaseTest {
+
+    private static final int INVALID_COURIER_ID = 0;
+    private static final String INSUFFICIENT_LOGIN_DATA_MESSAGE = "Недостаточно данных для входа";
+    private static final String COURIER_NOT_FOUND_MESSAGE = "Курьер не найден";
 
     @Test
     @Story("Успешное получение количества заказов")
@@ -40,8 +43,6 @@ class CourierOrdersCountTest extends BaseTest {
                 .body("ordersCount", notNullValue());
     }
 
-    private static final int INVALID_COURIER_ID = 0;
-
     @Test
     @Story("Запрос без номера")
     @Severity(SeverityLevel.CRITICAL)
@@ -50,7 +51,7 @@ class CourierOrdersCountTest extends BaseTest {
         courierClient.getOrdersCount(INVALID_COURIER_ID)
                 .then()
                 .statusCode(400)
-                .body("message", containsString("Недостаточно данных для поиска"));
+                .body("message", containsString(INSUFFICIENT_LOGIN_DATA_MESSAGE));
     }
 
     @Test
@@ -61,6 +62,6 @@ class CourierOrdersCountTest extends BaseTest {
         courierClient.getOrdersCount(NON_EXISTENT_ID)
                 .then()
                 .statusCode(404)
-                .body("message", containsString("Курьер не найден"));
+                .body("message", containsString(COURIER_NOT_FOUND_MESSAGE));
     }
 }

@@ -21,6 +21,10 @@ import static org.hamcrest.Matchers.equalTo;
 @Feature("Завершение заказа")
 class OrderFinishTest extends BaseTest {
 
+    private static final String INSUFFICIENT_DATA_FOR_SEARCH_MESSAGE = "Недостаточно данных для поиска";
+    private static final String ORDER_NOT_FOUND_MESSAGE = "Заказа с таким id не существует";
+    private static final String ORDER_CANNOT_BE_COMPLETED_MESSAGE = "Этот заказ нельзя завершить";
+
     @Test
     @Story("Успешное завершение заказа")
     @Severity(SeverityLevel.BLOCKER)
@@ -60,7 +64,7 @@ class OrderFinishTest extends BaseTest {
         orderClient.accept(NON_EXISTENT_ID)
                 .then()
                 .statusCode(400)
-                .body("message", containsString("Недостаточно данных для поиска"));
+                .body("message", containsString(INSUFFICIENT_DATA_FOR_SEARCH_MESSAGE));
     }
 
     @Test
@@ -71,7 +75,7 @@ class OrderFinishTest extends BaseTest {
         orderClient.finish(NON_EXISTENT_ID)
                 .then()
                 .statusCode(404)
-                .body("message", containsString("Заказа с таким id не существует"));
+                .body("message", containsString(ORDER_NOT_FOUND_MESSAGE));
     }
 
     @Test
@@ -92,6 +96,6 @@ class OrderFinishTest extends BaseTest {
         orderClient.finish(orderId)
                 .then()
                 .statusCode(409)
-                .body("message", containsString("Этот заказ нельзя завершить"));
+                .body("message", containsString(ORDER_CANNOT_BE_COMPLETED_MESSAGE));
     }
 }

@@ -1,10 +1,6 @@
 package ru.yandex.practicum.scooter.tests;
 
-import io.qameta.allure.Epic;
-import io.qameta.allure.Feature;
-import io.qameta.allure.Severity;
-import io.qameta.allure.SeverityLevel;
-import io.qameta.allure.Story;
+import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +17,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Feature("Удаление курьера")
 class CourierDeleteTest extends BaseTest {
 
+    private static final String COURIER_ID_POSITIVE_MESSAGE = "id курьера должен быть положительным";
+    private static final String COURIER_NOT_FOUND_MESSAGE = "Курьера с таким id нет.";
+    private static final String INSUFFICIENT_DATA_MESSAGE = "Недостаточно данных для удаления курьера";
+
     @Test
     @Story("Успешный запрос возвращает ok: true")
     @Severity(SeverityLevel.BLOCKER)
@@ -35,7 +35,7 @@ class CourierDeleteTest extends BaseTest {
 
         int courierId = courierClient.getCourierId(
                 new CourierCredentials(courier.getLogin(), courier.getPassword()));
-        assertTrue(courierId > 0, "id курьера должен быть положительным");
+        assertTrue(courierId > 0, COURIER_ID_POSITIVE_MESSAGE);
 
         Response response = courierClient.delete(courierId);
 
@@ -53,7 +53,7 @@ class CourierDeleteTest extends BaseTest {
 
         response.then()
                 .statusCode(404)
-                .body("message", containsString("Курьера с таким id нет."));
+                .body("message", containsString(COURIER_NOT_FOUND_MESSAGE));
     }
 
     @Test
@@ -65,7 +65,7 @@ class CourierDeleteTest extends BaseTest {
 
         response.then()
                 .statusCode(400)
-                .body("message", containsString("Недостаточно данных для удаления курьера"));
+                .body("message", containsString(INSUFFICIENT_DATA_MESSAGE));
     }
 
     @Test
@@ -82,7 +82,7 @@ class CourierDeleteTest extends BaseTest {
 
         int courierId = courierClient.getCourierId(
                 new CourierCredentials(courier.getLogin(), courier.getPassword()));
-        assertTrue(courierId > 0, "id курьера должен быть положительным");
+        assertTrue(courierId > 0, COURIER_ID_POSITIVE_MESSAGE);
 
         courierClient.delete(courierId)
                 .then()
@@ -93,6 +93,6 @@ class CourierDeleteTest extends BaseTest {
 
         secondDeleteAttempt.then()
                 .statusCode(404)
-                .body("message", containsString("Курьера с таким id нет."));
+                .body("message", containsString(COURIER_NOT_FOUND_MESSAGE));
     }
 }
