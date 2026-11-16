@@ -107,14 +107,6 @@ public class OrderClient {
                 .put(ApiConfig.ORDERS_PATH + "/finish/" + orderId);
     }
 
-    @Step("Orders - Завершить заказ без id {orderId}")
-    public Response finishWithoutId() {
-        return given()
-                .spec(requestSpec())
-                .when()
-                .put(ApiConfig.ORDERS_PATH + "/finish");
-    }
-
     /**
      * Сервис принимает track заказа как query-параметр.
      */
